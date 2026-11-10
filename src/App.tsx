@@ -50,6 +50,9 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: conversation }),
       })
+      if (!response.headers.get('content-type')?.includes('application/json')) {
+        throw new Error('The chat service returned an unexpected response. Check the Vercel deployment and API function logs.')
+      }
       const result = (await response.json()) as { reply?: string; error?: string }
       if (!response.ok) throw new Error(result.error || 'Something went wrong. Please try again.')
       if (!result.reply) throw new Error('The travel guide returned an empty reply. Try again.')
